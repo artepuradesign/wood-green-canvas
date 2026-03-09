@@ -33,6 +33,57 @@ const AdminContadores: React.FC = () => {
   const [detailsPagination, setDetailsPagination] = useState<any>(null);
   const [detailsPage, setDetailsPage] = useState(1);
 
+  // Modal de detalhes do acesso
+  const [selectedVisit, setSelectedVisit] = useState<PageVisitDetail | null>(null);
+  const [geoData, setGeoData] = useState<any>(null);
+  const [geoLoading, setGeoLoading] = useState(false);
+
+  const parseUserAgent = (ua: string) => {
+    let browser = 'Desconhecido';
+    let os = 'Desconhecido';
+    let device = 'Desktop';
+
+    // Browser
+    if (ua.includes('Edg/')) browser = 'Microsoft Edge';
+    else if (ua.includes('OPR/') || ua.includes('Opera')) browser = 'Opera';
+    else if (ua.includes('Chrome/') && !ua.includes('Edg/')) browser = 'Google Chrome';
+    else if (ua.includes('Safari/') && !ua.includes('Chrome')) browser = 'Safari';
+    else if (ua.includes('Firefox/')) browser = 'Firefox';
+
+    // OS
+    if (ua.includes('Windows NT 10')) os = 'Windows 10/11';
+    else if (ua.includes('Windows NT')) os = 'Windows';
+    else if (ua.includes('Mac OS X')) os = 'macOS';
+    else if (ua.includes('Android')) os = 'Android';
+    else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+    else if (ua.includes('Linux')) os = 'Linux';
+
+    // Device
+    if (ua.includes('Mobile') || ua.includes('Android') || ua.includes('iPhone')) device = 'Mobile';
+    else if (ua.includes('iPad') || ua.includes('Tablet')) device = 'Tablet';
+
+    return { browser, os, device };
+  };
+
+  const openVisitDetails = async (visit: PageVisitDetail) => {
+    setSelectedVisit(visit);
+    setGeoData(null);
+    if (visit.ip_address && visit.ip_address !== '—') {
+      setGeoLoading(true);
+      try {
+        const res = await fetch(`https://ip-api.com/json/${visit.ip_address}?fields=status,message,country,regionName,city,lat,lon,isp,org,timezone`);
+        const data = await res.json();
+        if (data.status === 'success') {
+          setGeoData(data);
+        }
+      } catch (e) {
+        console.warn('Erro ao buscar geolocalização:', e);
+      } finally {
+        setGeoLoading(false);
+      }
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
