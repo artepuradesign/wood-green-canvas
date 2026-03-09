@@ -35,17 +35,24 @@ const AdminContadores: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [summaryData, dailyData, topData] = await Promise.all([
+      const [summaryData, dailyData] = await Promise.all([
         pageVisitService.getSummary(page, 50, search),
-        pageVisitService.getDailyStats(30),
-        pageVisitService.getTopUsers(10)
+        pageVisitService.getDailyStats(30)
       ]);
 
       setSummary(summaryData.summary);
       setStats(summaryData.stats);
       setPagination(summaryData.pagination);
       setDailyStats(dailyData.daily);
-      setTopUsers(topData.users);
+
+      // Top users carregado separadamente para não bloquear a página
+      try {
+        const topData = await pageVisitService.getTopUsers(10);
+        setTopUsers(topData.users);
+      } catch (e) {
+        console.warn('Top users indisponível:', e);
+        setTopUsers([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar contadores:', error);
       toast.error('Erro ao carregar dados dos contadores');
