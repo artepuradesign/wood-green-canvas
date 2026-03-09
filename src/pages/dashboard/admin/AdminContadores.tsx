@@ -185,34 +185,53 @@ const AdminContadores: React.FC = () => {
                   <TableHead>Usuário</TableHead>
                   <TableHead>IP</TableHead>
                   <TableHead>Navegador</TableHead>
+                  <TableHead>Sistema</TableHead>
+                  <TableHead>Dispositivo</TableHead>
+                  <TableHead className="text-center">Detalhes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pageDetails.map((visit) => (
-                  <TableRow key={visit.id}>
-                    <TableCell className="text-sm">
-                      {format(new Date(visit.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={visit.visitor_type === 'usuario' ? 'default' : 'secondary'}>
-                        {visit.visitor_type === 'usuario' ? 'Usuário' : 'Visitante'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {visit.visitor_type === 'usuario' 
-                        ? <span>{visit.full_name || visit.login} <span className="text-muted-foreground">(ID: {visit.user_id})</span></span>
-                        : <span className="text-muted-foreground">—</span>
-                      }
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{visit.ip_address || '—'}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
-                      {visit.user_agent ? visit.user_agent.substring(0, 50) + '...' : '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {pageDetails.map((visit) => {
+                  const uaInfo = visit.user_agent ? parseUserAgent(visit.user_agent) : null;
+                  return (
+                    <TableRow key={visit.id}>
+                      <TableCell className="text-sm whitespace-nowrap">
+                        {format(new Date(visit.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={visit.visitor_type === 'usuario' ? 'default' : 'secondary'}>
+                          {visit.visitor_type === 'usuario' ? 'Usuário' : 'Visitante'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {visit.visitor_type === 'usuario' 
+                          ? <span>{visit.full_name || visit.email} <span className="text-muted-foreground">(ID: {visit.user_id})</span></span>
+                          : <span className="text-muted-foreground">—</span>
+                        }
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground font-mono">{visit.ip_address || '—'}</TableCell>
+                      <TableCell className="text-sm">{uaInfo?.browser || '—'}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{uaInfo?.os || '—'}</TableCell>
+                      <TableCell className="text-sm">
+                        <Badge variant="outline">{uaInfo?.device || '—'}</Badge>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 rounded-full"
+                          onClick={() => openVisitDetails(visit)}
+                          title="Ver detalhes completos"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
                 {pageDetails.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       Nenhum registro encontrado
                     </TableCell>
                   </TableRow>
@@ -229,6 +248,159 @@ const AdminContadores: React.FC = () => {
             <Button variant="outline" size="sm" disabled={detailsPage >= detailsPagination.pages} onClick={() => loadPageDetails(selectedPage, detailsPage + 1)}>Próxima</Button>
           </div>
         )}
+
+        {/* Modal de Detalhes do Acesso */}
+        <Dialog open={!!selectedVisit} onOpenChange={(open) => { if (!open) setSelectedVisit(null); }}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                Detalhes do Acesso
+              </DialogTitle>
+              <DialogDescription>
+                Informações completas sobre esta visita
+              </DialogDescription>
+            </DialogHeader>
+
+            {selectedVisit && (
+              <div className="space-y-4">
+                {/* Info Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                      <Clock className="w-3.5 h-3.5" /> Data/Hora
+                    </div>
+                    <p className="text-sm font-medium">{format(new Date(selectedVisit.created_at), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}</p>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                      <Users className="w-3.5 h-3.5" /> Tipo
+                    </div>
+                    <Badge variant={selectedVisit.visitor_type === 'usuario' ? 'default' : 'secondary'}>
+                      {selectedVisit.visitor_type === 'usuario' ? 'Usuário' : 'Visitante'}
+                    </Badge>
+                    {selectedVisit.visitor_type === 'usuario' && (
+                      <p className="text-xs text-muted-foreground mt-1">{selectedVisit.full_name || selectedVisit.email} (ID: {selectedVisit.user_id})</p>
+                    )}
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                      <Globe className="w-3.5 h-3.5" /> Endereço IP
+                    </div>
+                    <p className="text-sm font-mono font-medium">{selectedVisit.ip_address || '—'}</p>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                      <Navigation className="w-3.5 h-3.5" /> Página
+                    </div>
+                    <p className="text-sm font-mono break-all">{selectedVisit.page_path}</p>
+                  </div>
+
+                  {selectedVisit.user_agent && (() => {
+                    const ua = parseUserAgent(selectedVisit.user_agent);
+                    return (
+                      <>
+                        <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                            <Monitor className="w-3.5 h-3.5" /> Navegador / Sistema
+                          </div>
+                          <p className="text-sm font-medium">{ua.browser} • {ua.os}</p>
+                          <p className="text-xs text-muted-foreground">{ua.device}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+                            User Agent Completo
+                          </div>
+                          <p className="text-xs text-muted-foreground break-all leading-relaxed">{selectedVisit.user_agent}</p>
+                        </div>
+                      </>
+                    );
+                  })()}
+
+                  {selectedVisit.referrer && (
+                    <div className="p-3 rounded-lg bg-muted/50 space-y-1 sm:col-span-2">
+                      <div className="text-xs font-medium text-muted-foreground uppercase">Referrer</div>
+                      <p className="text-sm font-mono break-all">{selectedVisit.referrer}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Geolocalização */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary" /> Localização (baseada no IP)
+                  </h4>
+                  {geoLoading ? (
+                    <div className="flex items-center gap-2 p-4 rounded-lg bg-muted/50">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span className="text-sm text-muted-foreground">Buscando localização...</span>
+                    </div>
+                  ) : geoData ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Cidade</div>
+                          <p className="text-sm font-medium">{geoData.city || '—'}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Estado</div>
+                          <p className="text-sm font-medium">{geoData.regionName || '—'}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">País</div>
+                          <p className="text-sm font-medium">{geoData.country || '—'}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">ISP</div>
+                          <p className="text-sm font-medium">{geoData.isp || '—'}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Organização</div>
+                          <p className="text-sm font-medium">{geoData.org || '—'}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Fuso Horário</div>
+                          <p className="text-sm font-medium">{geoData.timezone || '—'}</p>
+                        </div>
+                      </div>
+                      {/* Mapa OpenStreetMap */}
+                      {geoData.lat && geoData.lon && (
+                        <div className="rounded-lg overflow-hidden border">
+                          <iframe
+                            width="100%"
+                            height="300"
+                            frameBorder="0"
+                            scrolling="no"
+                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${geoData.lon - 0.05},${geoData.lat - 0.03},${geoData.lon + 0.05},${geoData.lat + 0.03}&layer=mapnik&marker=${geoData.lat},${geoData.lon}`}
+                            className="w-full"
+                          />
+                          <div className="p-2 bg-muted/30 text-xs text-muted-foreground text-center">
+                            Lat: {geoData.lat} • Lon: {geoData.lon} •{' '}
+                            <a
+                              href={`https://www.google.com/maps?q=${geoData.lat},${geoData.lon}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Abrir no Google Maps
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-lg bg-muted/50 text-center text-sm text-muted-foreground">
+                      {selectedVisit.ip_address ? 'Não foi possível obter a localização para este IP' : 'IP não disponível'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
