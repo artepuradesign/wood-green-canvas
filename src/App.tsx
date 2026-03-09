@@ -142,6 +142,7 @@ import Sessions from '@/pages/dashboard/Sessions';
 import SessionNotification from '@/components/notifications/SessionNotification';
 import Predefinicoes from '@/pages/dashboard/admin/Predefinicoes';
 import AdminPedidos from '@/pages/dashboard/admin/AdminPedidos';
+import AdminContadores from '@/pages/dashboard/admin/AdminContadores';
 
 // Novos painéis específicos
 import PainelColeta from '@/pages/dashboard/PainelColeta';
