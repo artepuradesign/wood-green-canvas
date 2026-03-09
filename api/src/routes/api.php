@@ -44,7 +44,7 @@ error_log("API_ROUTER: Método {$method}, Path: {$path}");
 // Endpoints públicos que não precisam de API Key
 $publicEndpoints = [
     '/home', '/plans', '/panels', '/modules', '/modules/public', '/panels/public', '/testimonials', 
-    '/system/status', '/test', '/webhooks', '/n8n', '/revendas/validate'
+    '/system/status', '/test', '/webhooks', '/n8n', '/revendas/validate', '/contadores/register'
 ];
 $isPublicEndpoint = false;
 foreach ($publicEndpoints as $publicPath) {
