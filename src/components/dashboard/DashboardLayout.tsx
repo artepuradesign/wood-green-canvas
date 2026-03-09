@@ -29,6 +29,8 @@ const DashboardLayout = ({
   const [isTablet, setIsTablet] = useState(false);
   const { isSupport, user, loading, signOut } = useAuth();
   
+  // Registrar visitas de página
+  usePageVisitTracker();
   // Detectar tablet de forma reativa
   useEffect(() => {
     const checkTablet = () => {
