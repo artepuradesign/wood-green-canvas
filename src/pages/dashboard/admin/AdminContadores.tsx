@@ -104,13 +104,17 @@ const AdminContadores: React.FC = () => {
   // Tela de detalhes de uma página específica
   if (selectedPage) {
     return (
-      <div className="space-y-6 p-4">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={() => setSelectedPage(null)}>
-            <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
-          </Button>
-          <h2 className="text-xl font-bold text-foreground">Detalhes: {selectedPage}</h2>
-        </div>
+      <div className="space-y-4 sm:space-y-6 px-1 sm:px-0">
+        <DashboardTitleCard
+          title={`Detalhes: ${selectedPage}`}
+          icon={<Eye className="h-4 w-4 sm:h-5 sm:w-5" />}
+          backTo="/dashboard/admin/contadores"
+          right={
+            <Button variant="outline" size="sm" onClick={() => setSelectedPage(null)}>
+              <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
+            </Button>
+          }
+        />
 
         <Card>
           <CardContent className="p-0">
