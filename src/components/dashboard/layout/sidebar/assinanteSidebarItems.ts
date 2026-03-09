@@ -124,39 +124,9 @@ export const createAssinanteSidebarItems = (handleLogout: () => void, panelMenus
       path: '#',
       subItems: [
         {
-          icon: ClipboardList,
-          label: 'Pedidos',
-          path: '/dashboard/admin/pedidos'
-        },
-        {
-          icon: Users,
-          label: 'Gestão de Usuários',
-          path: '/dashboard/gestao-usuarios'
-        },
-        {
-          icon: Palette,
-          label: 'Personalização',
-          path: '/dashboard/personalizacao'
-        },
-        {
           icon: FileText,
           label: 'Admin Depoimentos',
           path: '/dashboard/admin-depoimentos'
-        },
-        {
-          icon: Database,
-          label: 'Base de CPFs',
-          path: '/dashboard/admin/base-cpf'
-        },
-        {
-          icon: Gift,
-          label: 'Gerenciar Cupons',
-          path: '/dashboard/admin/cupons'
-        },
-        {
-          icon: MessageSquare,
-          label: 'Gerenciar Chamados',
-          path: '/dashboard/gerenciar-chamados'
         },
         {
           icon: Settings,
@@ -164,14 +134,49 @@ export const createAssinanteSidebarItems = (handleLogout: () => void, panelMenus
           path: '/dashboard/admin/autenticacoes'
         },
         {
-          icon: SlidersHorizontal,
-          label: 'Predefinições',
-          path: '/dashboard/admin/predefinicoes'
+          icon: Database,
+          label: 'Base de CPFs',
+          path: '/dashboard/admin/base-cpf'
+        },
+        {
+          icon: BarChart3,
+          label: 'Contadores',
+          path: '/dashboard/admin/contadores'
+        },
+        {
+          icon: MessageSquare,
+          label: 'Gerenciar Chamados',
+          path: '/dashboard/gerenciar-chamados'
+        },
+        {
+          icon: Gift,
+          label: 'Gerenciar Cupons',
+          path: '/dashboard/admin/cupons'
+        },
+        {
+          icon: Users,
+          label: 'Gestão de Usuários',
+          path: '/dashboard/gestao-usuarios'
         },
         {
           icon: Droplets,
           label: 'Liquid Glass',
           path: '/dashboard/admin/liquid-glass'
+        },
+        {
+          icon: ClipboardList,
+          label: 'Pedidos',
+          path: '/dashboard/admin/pedidos'
+        },
+        {
+          icon: Palette,
+          label: 'Personalização',
+          path: '/dashboard/personalizacao'
+        },
+        {
+          icon: SlidersHorizontal,
+          label: 'Predefinições',
+          path: '/dashboard/admin/predefinicoes'
         },
       ]
     }] : []),
