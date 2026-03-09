@@ -174,7 +174,7 @@ class PageVisitController extends BaseController {
     // Top usuários (admin)
     public function getTopUsers() {
         try {
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+            $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 100)) : 20;
 
             $query = "SELECT 
                         pv.user_id, u.full_name, u.login, u.email,
@@ -182,19 +182,19 @@ class PageVisitController extends BaseController {
                         COUNT(DISTINCT pv.page_path) as pages_visited,
                         MAX(pv.created_at) as last_visit
                       FROM page_visits pv
-                      JOIN users u ON pv.user_id = u.id
-                      WHERE pv.visitor_type = 'usuario'
+                      INNER JOIN users u ON pv.user_id = u.id
+                      WHERE pv.visitor_type = 'usuario' AND pv.user_id IS NOT NULL
                       GROUP BY pv.user_id, u.full_name, u.login, u.email
                       ORDER BY total_visits DESC
-                      LIMIT ?";
+                      LIMIT " . $limit;
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$limit]);
+            $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             Response::success(['users' => $results]);
         } catch (Exception $e) {
             error_log("PAGE_VISIT_TOP_USERS: " . $e->getMessage());
-            Response::error('Erro ao buscar top users', 500);
+            Response::error('Erro ao buscar top users: ' . $e->getMessage(), 500);
         }
     }
 
