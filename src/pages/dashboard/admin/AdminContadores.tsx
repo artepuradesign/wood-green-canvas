@@ -31,10 +31,6 @@ const AdminContadores: React.FC = () => {
   const [detailsPagination, setDetailsPagination] = useState<any>(null);
   const [detailsPage, setDetailsPage] = useState(1);
 
-  if (!isSupport) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   const loadData = async () => {
     setLoading(true);
     try {

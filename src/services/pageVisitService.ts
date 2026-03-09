@@ -53,7 +53,7 @@ export interface TopUser {
 }
 
 const getHeaders = () => {
-  const token = cookieUtils.getSessionToken();
+  const token = cookieUtils.get('session_token') || cookieUtils.get('api_session_token');
   return {
     'Content-Type': 'application/json',
     ...(token ? { 'Authorization': `Bearer ${token}` } : {})
