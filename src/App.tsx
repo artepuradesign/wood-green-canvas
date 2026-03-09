@@ -338,6 +338,7 @@ function App() {
                     <Route path="/dashboard/admin/predefinicoes" element={<DashboardLayout><RequireSupportOrAdmin><Predefinicoes /></RequireSupportOrAdmin></DashboardLayout>} />
                      <Route path="/dashboard/admin/pedidos" element={<DashboardLayout><RequireSupportOrAdmin><AdminPedidos /></RequireSupportOrAdmin></DashboardLayout>} />
                     <Route path="/dashboard/admin/liquid-glass" element={<DashboardLayout><RequireSupportOrAdmin><LiquidGlassAdmin /></RequireSupportOrAdmin></DashboardLayout>} />
+                    <Route path="/dashboard/admin/contadores" element={<DashboardLayout><RequireSupportOrAdmin><AdminContadores /></RequireSupportOrAdmin></DashboardLayout>} />
                     
                     
                     {/* Integrações */}
