@@ -146,14 +146,14 @@ class PageVisitController extends BaseController {
             $countStmt->execute([$decodedPath]);
             $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-            $query = "SELECT pv.*, u.full_name, u.login, u.email
+            $query = "SELECT pv.*, u.full_name, u.email
                       FROM page_visits pv
                       LEFT JOIN users u ON pv.user_id = u.id
                       WHERE pv.page_path = ?
                       ORDER BY pv.created_at DESC
-                      LIMIT ? OFFSET ?";
+                      LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$decodedPath, $limit, $offset]);
+            $stmt->execute([$decodedPath]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             Response::success([
@@ -177,14 +177,14 @@ class PageVisitController extends BaseController {
             $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 100)) : 20;
 
             $query = "SELECT 
-                        pv.user_id, u.full_name, u.login, u.email,
+                        pv.user_id, u.full_name, u.email,
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT pv.page_path) as pages_visited,
                         MAX(pv.created_at) as last_visit
                       FROM page_visits pv
                       INNER JOIN users u ON pv.user_id = u.id
                       WHERE pv.visitor_type = 'usuario' AND pv.user_id IS NOT NULL
-                      GROUP BY pv.user_id, u.full_name, u.login, u.email
+                      GROUP BY pv.user_id, u.full_name, u.email
                       ORDER BY total_visits DESC
                       LIMIT " . $limit;
             $stmt = $this->db->prepare($query);
