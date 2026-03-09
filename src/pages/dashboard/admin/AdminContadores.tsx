@@ -71,10 +71,27 @@ const AdminContadores: React.FC = () => {
     if (visit.ip_address && visit.ip_address !== '—') {
       setGeoLoading(true);
       try {
-        const res = await fetch(`https://ip-api.com/json/${visit.ip_address}?fields=status,message,country,regionName,city,lat,lon,isp,org,timezone`);
+        // ipapi.co suporta HTTPS gratuitamente
+        const res = await fetch(`https://ipapi.co/${visit.ip_address}/json/`);
         const data = await res.json();
-        if (data.status === 'success') {
-          setGeoData(data);
+        if (!data.error) {
+          setGeoData({
+            city: data.city || '—',
+            regionName: data.region || '—',
+            country: data.country_name || '—',
+            countryCode: data.country_code || '',
+            lat: data.latitude,
+            lon: data.longitude,
+            isp: data.org || '—',
+            org: data.org || '—',
+            timezone: data.timezone || '—',
+            postalCode: data.postal || '—',
+            asn: data.asn || '—',
+            connectionType: data.network ? 'Broadband' : '—',
+            domain: data.org || '—',
+          });
+        } else {
+          console.warn('Erro na API de geolocalização:', data.reason);
         }
       } catch (e) {
         console.warn('Erro ao buscar geolocalização:', e);
@@ -342,28 +359,40 @@ const AdminContadores: React.FC = () => {
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         <div className="p-3 rounded-lg bg-muted/50">
-                          <div className="text-xs text-muted-foreground">Cidade</div>
-                          <p className="text-sm font-medium">{geoData.city || '—'}</p>
+                          <div className="text-xs text-muted-foreground">IP</div>
+                          <p className="text-sm font-medium font-mono">{selectedVisit.ip_address}</p>
                         </div>
                         <div className="p-3 rounded-lg bg-muted/50">
-                          <div className="text-xs text-muted-foreground">Estado</div>
-                          <p className="text-sm font-medium">{geoData.regionName || '—'}</p>
+                          <div className="text-xs text-muted-foreground">Cidade</div>
+                          <p className="text-sm font-medium">{geoData.city}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Estado / Região</div>
+                          <p className="text-sm font-medium">{geoData.regionName}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">CEP / Código Postal</div>
+                          <p className="text-sm font-medium">{geoData.postalCode}</p>
                         </div>
                         <div className="p-3 rounded-lg bg-muted/50">
                           <div className="text-xs text-muted-foreground">País</div>
-                          <p className="text-sm font-medium">{geoData.country || '—'}</p>
+                          <p className="text-sm font-medium">{geoData.country} {geoData.countryCode ? `(${geoData.countryCode})` : ''}</p>
                         </div>
                         <div className="p-3 rounded-lg bg-muted/50">
                           <div className="text-xs text-muted-foreground">ISP</div>
-                          <p className="text-sm font-medium">{geoData.isp || '—'}</p>
+                          <p className="text-sm font-medium">{geoData.isp}</p>
                         </div>
                         <div className="p-3 rounded-lg bg-muted/50">
-                          <div className="text-xs text-muted-foreground">Organização</div>
-                          <p className="text-sm font-medium">{geoData.org || '—'}</p>
+                          <div className="text-xs text-muted-foreground">Latitude & Longitude</div>
+                          <p className="text-sm font-medium font-mono">{geoData.lat}, {geoData.lon}</p>
                         </div>
                         <div className="p-3 rounded-lg bg-muted/50">
-                          <div className="text-xs text-muted-foreground">Fuso Horário</div>
-                          <p className="text-sm font-medium">{geoData.timezone || '—'}</p>
+                          <div className="text-xs text-muted-foreground">ASN</div>
+                          <p className="text-sm font-medium">{geoData.asn}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs text-muted-foreground">Fuso Horário (UTC)</div>
+                          <p className="text-sm font-medium">{geoData.timezone}</p>
                         </div>
                       </div>
                       {/* Mapa OpenStreetMap */}
@@ -371,19 +400,19 @@ const AdminContadores: React.FC = () => {
                         <div className="rounded-lg overflow-hidden border">
                           <iframe
                             width="100%"
-                            height="300"
+                            height="350"
                             frameBorder="0"
                             scrolling="no"
                             src={`https://www.openstreetmap.org/export/embed.html?bbox=${geoData.lon - 0.05},${geoData.lat - 0.03},${geoData.lon + 0.05},${geoData.lat + 0.03}&layer=mapnik&marker=${geoData.lat},${geoData.lon}`}
                             className="w-full"
                           />
-                          <div className="p-2 bg-muted/30 text-xs text-muted-foreground text-center">
-                            Lat: {geoData.lat} • Lon: {geoData.lon} •{' '}
+                          <div className="p-2 bg-muted/30 text-xs text-muted-foreground text-center flex items-center justify-center gap-3">
+                            <span>Lat: {geoData.lat} • Lon: {geoData.lon}</span>
                             <a
                               href={`https://www.google.com/maps?q=${geoData.lat},${geoData.lon}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-primary hover:underline"
+                              className="text-primary hover:underline font-medium"
                             >
                               Abrir no Google Maps
                             </a>
