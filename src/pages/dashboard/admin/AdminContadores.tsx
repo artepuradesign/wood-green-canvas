@@ -91,6 +91,10 @@ const AdminContadores: React.FC = () => {
     loadData();
   }, [page, search]);
 
+  if (!isSupport) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const chartData = dailyStats.map(d => ({
     ...d,
     date: format(new Date(d.date), 'dd/MM', { locale: ptBR })
