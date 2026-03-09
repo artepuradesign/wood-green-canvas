@@ -175,18 +175,21 @@ const AdminContadores: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">📊 Contadores de Visitas</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={loadData}>
-            <RefreshCw className="w-4 h-4 mr-1" /> Atualizar
-          </Button>
-          <Button variant="destructive" size="sm" onClick={handleCleanup}>
-            <Trash2 className="w-4 h-4 mr-1" /> Limpar +90 dias
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-4 sm:space-y-6 px-1 sm:px-0">
+      <DashboardTitleCard
+        title="Contadores de Visitas"
+        icon={<BarChart3 className="h-4 w-4 sm:h-5 sm:w-5" />}
+        right={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={loadData}>
+              <RefreshCw className="w-4 h-4 mr-1" /> Atualizar
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleCleanup}>
+              <Trash2 className="w-4 h-4 mr-1" /> Limpar +90 dias
+            </Button>
+          </div>
+        }
+      />
 
       {/* Stats Cards */}
       {stats && (
