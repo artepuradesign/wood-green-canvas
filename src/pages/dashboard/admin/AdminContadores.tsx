@@ -13,6 +13,7 @@ import { Search, Trash2, Eye, Users, Globe, BarChart3, RefreshCw, ChevronLeft } 
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import DashboardTitleCard from '@/components/dashboard/DashboardTitleCard';
 
 const AdminContadores: React.FC = () => {
   const { isSupport } = useAuth();
