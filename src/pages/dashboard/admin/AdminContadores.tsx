@@ -71,10 +71,27 @@ const AdminContadores: React.FC = () => {
     if (visit.ip_address && visit.ip_address !== '—') {
       setGeoLoading(true);
       try {
-        const res = await fetch(`https://ip-api.com/json/${visit.ip_address}?fields=status,message,country,regionName,city,lat,lon,isp,org,timezone`);
+        // ipapi.co suporta HTTPS gratuitamente
+        const res = await fetch(`https://ipapi.co/${visit.ip_address}/json/`);
         const data = await res.json();
-        if (data.status === 'success') {
-          setGeoData(data);
+        if (!data.error) {
+          setGeoData({
+            city: data.city || '—',
+            regionName: data.region || '—',
+            country: data.country_name || '—',
+            countryCode: data.country_code || '',
+            lat: data.latitude,
+            lon: data.longitude,
+            isp: data.org || '—',
+            org: data.org || '—',
+            timezone: data.timezone || '—',
+            postalCode: data.postal || '—',
+            asn: data.asn || '—',
+            connectionType: data.network ? 'Broadband' : '—',
+            domain: data.org || '—',
+          });
+        } else {
+          console.warn('Erro na API de geolocalização:', data.reason);
         }
       } catch (e) {
         console.warn('Erro ao buscar geolocalização:', e);
