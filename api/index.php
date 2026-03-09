@@ -656,6 +656,12 @@ try {
         exit();
     }
 
+    // Contadores de visitas
+    if (strpos($endpoint, '/contadores') === 0) {
+        include __DIR__ . '/src/routes/contadores.php';
+        exit();
+    }
+
     // Proxy busca por nome
     if (strpos($endpoint, '/proxy-busca-nome') === 0) {
         include __DIR__ . '/src/routes/proxy-busca-nome.php';
