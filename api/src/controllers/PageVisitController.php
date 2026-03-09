@@ -146,14 +146,14 @@ class PageVisitController extends BaseController {
             $countStmt->execute([$decodedPath]);
             $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-            $query = "SELECT pv.*, u.full_name, u.login, u.email
+            $query = "SELECT pv.*, u.full_name, u.email
                       FROM page_visits pv
                       LEFT JOIN users u ON pv.user_id = u.id
                       WHERE pv.page_path = ?
                       ORDER BY pv.created_at DESC
-                      LIMIT ? OFFSET ?";
+                      LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$decodedPath, $limit, $offset]);
+            $stmt->execute([$decodedPath]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             Response::success([
