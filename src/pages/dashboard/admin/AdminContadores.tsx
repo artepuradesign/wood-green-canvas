@@ -234,10 +234,47 @@ const AdminContadores: React.FC = () => {
 
       <Tabs defaultValue="pages" className="w-full">
         <TabsList>
+          <TabsTrigger value="resumo">Resumo</TabsTrigger>
           <TabsTrigger value="pages">Páginas</TabsTrigger>
           <TabsTrigger value="chart">Gráfico Diário</TabsTrigger>
           <TabsTrigger value="users">Top Usuários</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="resumo">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg">Todas as Páginas com Contador</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>#</TableHead>
+                    <TableHead>Página</TableHead>
+                    <TableHead className="text-center">Visitas</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
+                    </TableRow>
+                  ) : summary.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">Nenhuma página registrada</TableCell>
+                    </TableRow>
+                  ) : [...summary].sort((a, b) => Number(b.total_visits) - Number(a.total_visits)).map((item, i) => (
+                    <TableRow key={item.page_path}>
+                      <TableCell className="font-bold text-muted-foreground">{i + 1}</TableCell>
+                      <TableCell className="font-mono text-sm">{item.page_path}</TableCell>
+                      <TableCell className="text-center font-bold">{Number(item.total_visits).toLocaleString()}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="pages" className="space-y-4">
           <div className="flex gap-2">
