@@ -142,6 +142,7 @@ import Sessions from '@/pages/dashboard/Sessions';
 import SessionNotification from '@/components/notifications/SessionNotification';
 import Predefinicoes from '@/pages/dashboard/admin/Predefinicoes';
 import AdminPedidos from '@/pages/dashboard/admin/AdminPedidos';
+import AdminContadores from '@/pages/dashboard/admin/AdminContadores';
 
 // Novos painéis específicos
 import PainelColeta from '@/pages/dashboard/PainelColeta';
@@ -337,6 +338,7 @@ function App() {
                     <Route path="/dashboard/admin/predefinicoes" element={<DashboardLayout><RequireSupportOrAdmin><Predefinicoes /></RequireSupportOrAdmin></DashboardLayout>} />
                      <Route path="/dashboard/admin/pedidos" element={<DashboardLayout><RequireSupportOrAdmin><AdminPedidos /></RequireSupportOrAdmin></DashboardLayout>} />
                     <Route path="/dashboard/admin/liquid-glass" element={<DashboardLayout><RequireSupportOrAdmin><LiquidGlassAdmin /></RequireSupportOrAdmin></DashboardLayout>} />
+                    <Route path="/dashboard/admin/contadores" element={<DashboardLayout><RequireSupportOrAdmin><AdminContadores /></RequireSupportOrAdmin></DashboardLayout>} />
                     
                     
                     {/* Integrações */}

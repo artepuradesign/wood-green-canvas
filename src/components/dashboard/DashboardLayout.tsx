@@ -15,6 +15,7 @@ import UserNotifications from '@/components/notifications/UserNotifications';
 import AdminNotifications from '@/components/notifications/AdminNotifications';
 import { useNotificationDuplicationPrevention } from '@/hooks/useNotificationDuplicationPrevention';
 import { toastNotificationManager } from '@/utils/toastNotificationManager';
+import { usePageVisitTracker } from '@/hooks/usePageVisitTracker';
 
 const DashboardLayout = ({
   children
@@ -28,6 +29,8 @@ const DashboardLayout = ({
   const [isTablet, setIsTablet] = useState(false);
   const { isSupport, user, loading, signOut } = useAuth();
   
+  // Registrar visitas de página
+  usePageVisitTracker();
   // Detectar tablet de forma reativa
   useEffect(() => {
     const checkTablet = () => {
