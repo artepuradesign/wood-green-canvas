@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, User, Wallet, History, Mail, MessageCircle, MessageSquare, Sparkles, Gift, Ticket, LogOut, Layers, CreditCard, RefreshCw, Settings, Users, Palette, FileText, Database, UserPlus, Plug, Store, SlidersHorizontal, ClipboardList, Cog, Droplets } from 'lucide-react';
+import { LayoutDashboard, User, Wallet, History, Mail, MessageCircle, MessageSquare, Sparkles, Gift, Ticket, LogOut, Layers, CreditCard, RefreshCw, Settings, Users, Palette, FileText, Database, UserPlus, Plug, Store, SlidersHorizontal, ClipboardList, Cog, Droplets, BarChart3 } from 'lucide-react';
 import { SidebarItem } from '../types';
 
 export const createAssinanteSidebarItems = (handleLogout: () => void, panelMenus: SidebarItem[] = [], isSupport: boolean = false): SidebarItem[] => {
